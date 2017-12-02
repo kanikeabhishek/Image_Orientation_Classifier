@@ -7,3 +7,7 @@ def initialize_NN():
     return []
 
 def initialize_weight():
+    return
+
+def activation():
+    return

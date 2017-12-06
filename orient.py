@@ -104,24 +104,30 @@ def activation_function(inputs, weights, para='sigmoid'):
 
     # ReLu transfer
     elif para == 'relu':
-        return summation * (summation >0)
+        return summation * (summation > 0)
 
 
-def forward_propagate(network, row):
-    inputs = row
-    for layer in network:
+def propagate_forward(nnetwork, each_data):
+    """
+    :param nnetwork: neural network with weights
+    :param each_data: each row of data, includes X, and y at the end of the list
+    :return:
+    """
+    inputs = each_data
+    for layer in nnetwork:
         new_inputs = []
         for neuron in layer:
+            # calculate the output value of a neuron
             neuron['output'] = activation_function(inputs,neuron['w'])
             new_inputs.append(neuron['output'])
+        # output of a layer is the input of next layer
         inputs = new_inputs
-    return inputs
+    outputs = inputs
+    return outputs
 train = read_data('test-data.txt')
-print [train[x][-1] for x in range(100)]
 extract_feature_class(train)
 
-#nn = initialize_NN(1)
-#nn = construct_network(nn,2,2,1)
-nn = [[{'w': [0.13436424411240122, 0.8474337369372327, 0.763774618976614]}],
-      [{'w': [0.2550690257394217, 0.49543508709194095]}, {'w': [0.4494910647887381, 0.651592972722763]}]]
-print forward_propagate(nn,[1,0,'Y'])
+nn = initialize_NN(1)
+nn = construct_network(nn,2,2,1)
+
+print propagate_forward(nn,[1,0,'Y'])

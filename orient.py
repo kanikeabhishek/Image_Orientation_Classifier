@@ -16,7 +16,10 @@ def read_data(filename):
         #for row in file:
             #each_data = map(int, row.split()[2:])
             #print len(each_data)
-        return [map(int, row.split()[1:]) for row in file]
+        dataset =  [map(int, row.split()[1:]) for row in file]
+        for row in dataset:
+            row.append(row.pop(0))
+        return dataset
         #print type(dataset),len(dataset)
 
 # extract X and y
@@ -39,10 +42,15 @@ def initialize_NN(n_hiddenlayer):
     :param n_hiddenlayer: number of hidden layer
     :return: list of lists, each list is a layer
     """
-    return [[] for x in range(n_hiddenlayer+1)] # hidden layer + 1 output layer
+    return [[] for x in range(n_hiddenlayer+1)]  # hidden layer + 1 output layer
 
 
 def initialize_layer_weight(input_neuron, neuron):
+    """
+    :param input_neuron: number of input neurons of a layer
+    :param neuron: number of output neurons of a layer
+    :return:
+    """
     return [{'w': [random.random() for x in range(input_neuron + 1)]} for x in range(neuron)]
 
 
@@ -71,13 +79,49 @@ def construct_network(nnetwork, input_neuron, output_neuron, *hidden_neuron):
                 nnetwork[i] = initialize_layer_weight(hidden_neuron[i], output_neuron)
             else:
                 nnetwork[i] = initialize_layer_weight(hidden_neuron[i-1], hidden_neuron[i])
-    print nnetwork
-def activation():
-    return
+    return nnetwork
 
 
+def activation_function(inputs, weights, para='sigmoid'):
+    """
+    :param inputs: input data
+    :param weights: weight of neuron
+    :param para: name of activation function: 'sigmoid', 'tanh', or 'Relu'.
+           Default to sigmoid
+    :return:
+    """
+    summation = weights[-1]
+    for i in range(len(weights) - 1):
+        summation += weights[i] * inputs[i]
+
+    # sigmoid transfer
+    if para == 'sigmoid':
+        return 1.0 / (1.0 + np.exp(-summation))
+
+    # tanh transfer
+    elif para == 'tanh':
+        return np.tanh(summation)
+
+    # ReLu transfer
+    elif para == 'relu':
+        return summation * (summation >0)
+
+
+def forward_propagate(network, row):
+    inputs = row
+    for layer in network:
+        new_inputs = []
+        for neuron in layer:
+            neuron['output'] = activation_function(inputs,neuron['w'])
+            new_inputs.append(neuron['output'])
+        inputs = new_inputs
+    return inputs
 train = read_data('test-data.txt')
+print [train[x][-1] for x in range(100)]
 extract_feature_class(train)
 
-nn = initialize_NN(1)
-construct_network(nn,2,2,1)
+#nn = initialize_NN(1)
+#nn = construct_network(nn,2,2,1)
+nn = [[{'w': [0.13436424411240122, 0.8474337369372327, 0.763774618976614]}],
+      [{'w': [0.2550690257394217, 0.49543508709194095]}, {'w': [0.4494910647887381, 0.651592972722763]}]]
+print forward_propagate(nn,[1,0,'Y'])

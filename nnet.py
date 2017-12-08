@@ -11,6 +11,10 @@ from sklearn.preprocessing import scale # only use for normalizing data
 # http://florianmuellerklein.github.io/nn/
 # https://machinelearningmastery.com/implement-backpropagation-algorithm-scratch-python/
 #
+# Usage:
+# train_model(train_file): train the neural network using train file and save to 'nnet_model.txt'
+# test_model(test_file): read 'nnet_model.txt', and predict on test data
+#
 # Our implementation consists of three layers: 1 input, 1 hidden and 1 output layer.
 # Number of neurons in input: 192
 # Number of neurons in output: 4
@@ -31,6 +35,27 @@ from sklearn.preprocessing import scale # only use for normalizing data
 
 # Among 3 activation function, the sigmoid gives best results after 20 iterations with 40 hidden neurons. (68.34%)
 # Please see report for detailed accuracy and running time.
+
+# By comparing the predicted results, pic with 270
+# Some misclassified image:
+# 9406463030.jpg
+# 3847697001.jpg
+# 3940396224.jpg
+# 9483846588.jpg
+# 39815369.jpg
+
+# Those images are all taken outside, and include rocks or mountains.
+# Those can be difficult to classify cause there are no evidences (like sky) can indicate the direction.
+
+# Some successfully classified image
+# 3978889742.jpg
+# 4082824675.jpg
+# 4238737977.jpg
+# 4279815500.jpg
+# 4393512978.jpg
+#
+# Those images are also taken outside, but the either captured the sky, or they have some objects (like house)
+
 
 
 def read_data(filename):
@@ -185,7 +210,11 @@ class neural_network(object):
         return error
 
     def train(self, data):
-        num_example = np.shape(data)[0]
+        """
+        train neural network using data
+        :param data: training data
+        :return:
+        """
 
         for i in range(self.iter):
             error = 0.0
@@ -216,6 +245,11 @@ class neural_network(object):
 
 
 def train_model(train_file):
+    """
+    train the neural network using train file and save to 'nnet_model.txt'
+    :param train_file: train file
+    :return:
+    """
 
     # read text file
     X = read_data(train_file)
@@ -229,6 +263,11 @@ def train_model(train_file):
 
 
 def test_model(test_file):
+    """
+    read 'nnet_model.txt', and predict on test data
+    :param test_file: test file
+    :return:
+    """
     nnet = pickle.load(open("nnet_model.txt", "rb", -1))
 
 
@@ -250,17 +289,31 @@ def test_model(test_file):
 
     # calculate accuracy
     # count = 0
+    # count0 = 0
+    # count1 = 0
+    # count2 = 0
+    # count3 = 0
+    #
     # for i in range(len(x)):
     #     if predict_label[i] == true_label[i]:
+    #         if true_label[i] == 0:
+    #             count0 +=1
+    #         elif true_label[i] == 1:
+    #             count1 +=1
+    #         elif true_label[i] == 2:
+    #             count2 +=1
+    #         elif true_label[i] == 3:
+    #             count3 +=1
     #         count +=1
+    # print count0,count1,count2,count3
     # print count, float(count)/len(x)
 
 
-if __name__ == '__main__':
-    start = time.time()
-    trainfile = 'train-data.txt'
-    testfile = 'test-data.txt'
-    train_model(trainfile)
-    test_model(testfile)
-    end = time.time()
-    print end - start
+# if __name__ == '__main__':
+#     start = time.time()
+#     trainfile = 'train-data.txt'
+#     testfile = 'test-data.txt'
+#     train_model(trainfile)
+#     test_model(testfile)
+#     end = time.time()
+#     #print end - start

@@ -5,8 +5,65 @@ import matplotlib.pyplot as plt
 import math
 import operator
 
+'''
+Model:
+
+Each image is divided into four corners top,right,bottom,left and we consider 3 first/last rows/colums in each of these corners.
+
+Assumptions:
+1. In a 0 degree rotated image, the blue pixels values at the top of the image will have higher values.
+2. In a 0 degree rotated image, the red pixels values at the bottom of the image will have lower values.(Brown is considered as darker shade of red)
+3. In a 0 degree rotated image, the green pixels values at the bottom of the image will have lower values.( Grass is considered as darker shade of green)
+
+Similar assumptions have been extended for 90,180,270 degree rotated images
+
+Our hypothesis consist of 12 weak decision stumps, 3 for each of the 4 image orientation:
+h1 - checks for red pixel values at the bottom of the image and if it is the minimum
+     among all the red values at the four corners of the images it will classify the image as 0 otherwise not 0
+h2 - checks for green pixel values at the bottom of the image and if it is the minimum
+     among all the green values at the four corners of the images it will classify the image as 0 otherwise not 0
+h3 - checks for blue pixel values at the top of the image and if it is the maximum
+     among all the red values at the four corners of the images it will classify the image as 0 otherwise not 0
+h4 - checks for red pixel values at the left of the image and if it is the minimum
+     among all the red values at the four corners of the images it will classify the image as 90 otherwise not 90
+h5 - checks for green pixel values at the left of the image and if it is the minimum
+     among all the green values at the four corners of the images it will classify the image as 90 otherwise not 90
+h6 - checks for blue pixel values at the right of the image and if it is the maximum
+     among all the red values at the four corners of the images it will classify the image as 90 otherwise not 90
+h7 - checks for red pixel values at the top of the image and if it is the minimum
+     among all the red values at the four corners of the images it will classify the image as 180 otherwise not 180
+h8 - checks for green pixel values at the top of the image and if it is the minimum
+     among all the green values at the four corners of the images it will classify the image as 180 otherwise not 180
+h9 - checks for blue pixel values at the bottom of the image and if it is the maximum
+     among all the red values at the four corners of the images it will classify the image as 180 otherwise not 180
+h10 - checks for red pixel values at the right of the image and if it is the minimum
+     among all the red values at the four corners of the images it will classify the image as 270 otherwise not 270
+h11 - checks for green pixel values at the right of the image and if it is the minimum
+     among all the green values at the four corners of the images it will classify the image as 270 otherwise not 270
+h12 - checks for blue pixel values at the left of the image and if it is the maximum
+     among all the red values at the four corners of the images it will classify the image as 270 otherwise not 270
+
+Prediction:
+We take a weighted vote of all these hypothesis. For example if decision stump h1 says that image has a 0 degree
+orientation and h10 says the image has a 270 degree orientation then we assign the oritentation based on th weights
+of h1 and h10 decision stumps.
+
+Some of wrongly classified images
+test/8412266723.jpg
+test/9297964944.jpg
+test/9466725145.jpg
+test/8013919722.jpg
+test/8186083991.jpg
+
+Our assumption about the images might not work well on those images consists of rocks/mountains.Some of the images have
+might not have green or brown in the bottom. For exmaple images consisting of a road at the bottom will be grey
+'''
+
+
 N = 0
 Z = {}
+
+
 
 def calculate_binary_label(train_label_np,H):
     labels_list = {}
@@ -394,7 +451,7 @@ def predict():
         if(predict == test_label_np[index]):
             count+=1
         else:
-            #print("Predict wrong %d,%d"%(predict,test_label_np[index]))
+            #print("Predict wrong %d,%d,%s"%(predict,test_label_np[index],image_ids[index]))
             pass
         output_str +=image_ids[index] + ' ' + str(predict) + '\n'
 
@@ -434,6 +491,7 @@ def train():
     train_label_np = np.array(train_label,dtype = int)
     N = len(train_data)
     H = {h1:0,h2:0,h3:0,h4:90,h5:90,h6:90,h7:180,h8:180,h9:180,h10:270,h11:270,h12:270}
+
 
     AdaBoost(train_data_np,train_label_np,H)
     print("*************training done***********************")

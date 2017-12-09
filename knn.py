@@ -1,72 +1,63 @@
 import numpy as np
 import math
 from collections import Counter
-import time
 
-train_features_vec = []
-test_features_vec = []
-accuray_count = 0
+class KNN():
 
-def calculate_euclidian_distance(X_train,X_test):
-    #return [math.sqrt(sum(row**2))for row in X_train - X_test]
-    return np.sqrt(np.sum(np.subtract(X_train,X_test)**2,axis =1))
+    def __init__(self):
+        self.train_features_vec = []
+        self.test_features_vec = []
+        self.correct_count = 0
+        self.accuray = 0
+        self.k = 11
 
+    def calculate_euclidian_distance(self,X_train,X_test):
+        #return [math.sqrt(sum(row**2))for row in X_train - X_test]
+        return np.sqrt(np.sum(np.subtract(X_train,X_test)**2,axis =1))
 
-with open('train-data.txt') as f:
-    for line in f.readlines():
-        elements = line.split(" ")
-        train_features_vec.append(map(int,elements[1:]))
-        #print(map(int,elements[1:]))
+    def train(self,train_fname):
+        with open(train_fname) as f:
+            for line in f.readlines():
+                elements = line.split(" ")
+                self.train_features_vec.append(elements[1:])
 
-train_features_vec_np = np.array(train_features_vec)
-#print(train_features_vec_np)
+        self.train_features_vec_np = np.array(self.train_features_vec,dtype = int)
+        #print(self.train_features_vec_np)
+        np.savetxt('knn_file.txt',self.train_features_vec_np,fmt='%i',delimiter = ' ')
 
-with open('test-data.txt') as f:
-    for line in f.readlines():
-        elements = line.split(" ")
-        test_features_vec.append(map(int,elements[1:]))
-        #print(map(int,elements[1:]))
+    def predict(self,test_fname):
+        image_id = []
+        output_str = ''
+        with open(test_fname) as f:
+            for line in f.readlines():
+                elements = line.split(" ")
+                image_id.append(elements[0])
+                self.test_features_vec.append(elements[1:])
+                #print(map(int,elements[1:]))
 
-test_features_vec_np = np.array(test_features_vec)
+        self.test_features_vec_np = np.array(self.test_features_vec,dtype = int)
+        self.train_features_vec_np = np.loadtxt('knn_file.txt',delimiter = ' ')
+        #self.train_features_vec_np = self.train_features_vec_np.astype(int)
+        #print(self.train_features_vec_np.dtype)
 
-train_data,train_label = train_features_vec_np[:,1:],train_features_vec_np[:,0]
-test_data,test_label = test_features_vec_np[:,1:],test_features_vec_np[:,0]
-#start_time = time.time()
-for index,x_test in enumerate(test_data):
-    #start_time = time.time()
-    euc_distance_vec = calculate_euclidian_distance(train_data,x_test)
-    #end_time = time.time()
-    #print("calculate_euclidian_distance %f"%(end_time - start_time))
-    #print(len(euc_distance_vec))
-    #start_time = time.time()
-    #eucdist_set = [item for item in zip(train_label,euc_distance_vec)]
-    #print(train_label.shape)
-    #print(euc_distance_vec.shape)
-    eucdist_distance_vec = np.column_stack((euc_distance_vec,train_label))
-    #end_time = time.time()
-    #print("eucdist_set %f"%(end_time - start_time))
-    #print(eucdist_set)
-    #knn_vec = sorted(eucdist_distance_vec,key=lambda row:row[0])
-    #print(knn_vec)
-    #knn_vec = eucdist_distance_vec[eucdist_distance_vec[:,0].argsort()][0:11,1]
-    #print(eucdist_distance_vec.shape)
-    knn_vec = eucdist_distance_vec[np.argpartition(eucdist_distance_vec[:,0],11)][0:11,1]
-    #print(knn_vec[0:9,1])
-    #print(knn_vec)
-    #knn_vec_label = [item[1]for item in knn_vec]
-    knn_vec_counter = Counter(knn_vec)
-    predict_label = knn_vec_counter.most_common(1)[0][0]
-    if(predict_label == test_label[index]):
-        accuray_count +=1
-    #print(index,predict_label,test_label[index])
-    #print("***********************************************************************")
-#print(accuray_count)
-#print(len(test_label))
-#end_time = time.time()
-#print(start_time - end_time)
-print("Accuray = %f"%(float(accuray_count)/len(test_label)))
+        train_data,train_label = self.train_features_vec_np[:,1:],self.train_features_vec_np[:,0]
+        test_data,test_label = self.test_features_vec_np[:,1:],self.test_features_vec_np[:,0]
 
-#print(train_data)
-#print(test_data)
-#print(train_label)
-#print(test_label)
+        for index,x_test in enumerate(test_data):
+            euc_distance_vec = self.calculate_euclidian_distance(train_data,x_test)
+            eucdist_distance_vec = np.column_stack((euc_distance_vec,train_label))
+            knn_vec = eucdist_distance_vec[np.argpartition(eucdist_distance_vec[:,0],self.k)][0:self.k,1]
+            knn_vec_counter = Counter(knn_vec)
+            predict_label = knn_vec_counter.most_common(1)[0][0]
+            output_str += image_id[index] + ' ' + str(int(predict_label)) + '\n'
+
+            if(predict_label == test_label[index]):
+                self.correct_count +=1
+        print("Accuray = %f"%((float(self.correct_count)/len(test_label))*100))
+        with open('output.txt','w') as f:
+            f.write(output_str)
+
+knn = KNN()
+knn.train('train-data.txt')
+print("*****training done*********")
+knn.predict('test-data.txt')

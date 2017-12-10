@@ -1,6 +1,7 @@
 #!/usr/bin/env python2
 
 import ada_boost
+from knn import KNN
 import sys
 
 def verifyInput():
@@ -17,11 +18,21 @@ def adaBoost(train_test, input_file, model_file):
     elif train_test == "test":
         ada_boost.predict(input_file, model_file)
 
+def nearest(train_test, input_file, model_file):
+    knn_instance = KNN()
+    if train_test == "train":
+        knn_instance.train(input_file, model_file)
+    elif train_test == "test":
+        knn_instance.predict(input_file, model_file)
+    
+
 def main():
     verifyInput()
     train_test, input_file, model_file, model = sys.argv[1:]
     if model == "adaboost":
         adaBoost(train_test, input_file, model_file)
+    elif model == "nearest":
+        nearest(train_test, input_file, model_file)
 
 if __name__ == '__main__':
     main()

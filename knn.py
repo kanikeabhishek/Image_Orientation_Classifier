@@ -6,7 +6,8 @@ from collections import Counter
 Implements K nearest neighbour classifier. During the training phase we just dump the train
 data to model_file.txt. The classifier predicts the orientaion of the image by looking at the orientaion of k closest neighbours
 and assigns the orientaion which has maximum count. The plot consiting of variations of accuracies of the model
-with K values from 3 to 50 is shown in knn_plot.jpg. The maximum accuray of 71.63 was obtained at K = 43.
+with K values from 3 to 50 is shown in knn_plot.png. The maximum accuray of 71.63 was obtained at K = 43.For overfitting
+reasons we have restricted k to 11 which gives an accuray of 71.04%
 '''
 
 class KNN():
@@ -17,7 +18,7 @@ class KNN():
         self.test_features_vec = []
         self.correct_count = 0
         self.accuray = 0
-        self.k = 43
+        self.k = 11
 
     """
     calculates euclidian distance
@@ -30,7 +31,7 @@ class KNN():
     """
     dumps the train data to knn_file.txt
     """
-    def train(self,train_fname):
+    def train(self,train_fname,model_file):
         with open(train_fname) as f:
             for line in f.readlines():
                 elements = line.split(" ")
@@ -38,13 +39,13 @@ class KNN():
 
         self.train_features_vec_np = np.array(self.train_features_vec,dtype = int)
         #print(self.train_features_vec_np)
-        np.savetxt('knn_file.txt',self.train_features_vec_np,fmt='%i',delimiter = ' ')
+        np.savetxt(model_file,self.train_features_vec_np,fmt='%i',delimiter = ' ')
 
     """
     predicts the orientaion of the image by looking at the orientaion of k closest neighbours
     and assigns the orientaion which has maximum count.
     """
-    def predict(self,test_fname):
+    def predict(self,test_fname,model_file):
         image_id = []
         output_str = ''
         with open(test_fname) as f:
@@ -55,7 +56,7 @@ class KNN():
                 #print(map(int,elements[1:]))
 
         self.test_features_vec_np = np.array(self.test_features_vec,dtype = int)
-        self.train_features_vec_np = np.loadtxt('knn_file.txt',delimiter = ' ')
+        self.train_features_vec_np = np.loadtxt(model_file,delimiter = ' ')
         #self.train_features_vec_np = self.train_features_vec_np.astype(int)
         #print(self.train_features_vec_np.dtype)
 
@@ -76,7 +77,3 @@ class KNN():
         with open('output.txt','w') as f:
             f.write(output_str)
 
-knn = KNN()
-knn.train('train-data.txt')
-print("*****training done*********")
-knn.predict('test-data.txt')

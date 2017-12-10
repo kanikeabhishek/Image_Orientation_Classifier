@@ -2,19 +2,34 @@ import numpy as np
 import math
 from collections import Counter
 
+'''
+Implements K nearest neighbour classifier. During the training phase we just dump the train
+data to model_file.txt. The classifier predicts the orientaion of the image by looking at the orientaion of k closest neighbours
+and assigns the orientaion which has maximum count. The plot consiting of variations of accuracies of the model
+with K values from 3 to 50 is shown in knn_plot.jpg. The maximum accuray of 71.63 was obtained at K = 43.
+'''
+
 class KNN():
 
+    #constructor
     def __init__(self):
         self.train_features_vec = []
         self.test_features_vec = []
         self.correct_count = 0
         self.accuray = 0
-        self.k = 11
+        self.k = 43
 
+    """
+    calculates euclidian distance
+    input: train_dataset,an instance of test data
+    return : vector of euclidian distances between test data and train data
+    """
     def calculate_euclidian_distance(self,X_train,X_test):
         #return [math.sqrt(sum(row**2))for row in X_train - X_test]
         return np.sqrt(np.sum(np.subtract(X_train,X_test)**2,axis =1))
-
+    """
+    dumps the train data to knn_file.txt
+    """
     def train(self,train_fname):
         with open(train_fname) as f:
             for line in f.readlines():
@@ -25,6 +40,10 @@ class KNN():
         #print(self.train_features_vec_np)
         np.savetxt('knn_file.txt',self.train_features_vec_np,fmt='%i',delimiter = ' ')
 
+    """
+    predicts the orientaion of the image by looking at the orientaion of k closest neighbours
+    and assigns the orientaion which has maximum count.
+    """
     def predict(self,test_fname):
         image_id = []
         output_str = ''
@@ -53,7 +72,7 @@ class KNN():
 
             if(predict_label == test_label[index]):
                 self.correct_count +=1
-        print("Accuray = %f"%((float(self.correct_count)/len(test_label))*100))
+        print("K = %d Accuray = %f"%(self.k,((float(self.correct_count)/len(test_label))*100)))
         with open('output.txt','w') as f:
             f.write(output_str)
 

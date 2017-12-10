@@ -2,7 +2,7 @@
 
 import ada_boost
 from knn import KNN
-import nnet
+from nnet import train_model, test_model
 import sys
 
 def verifyInput():
@@ -28,16 +28,16 @@ def nearest(train_test, input_file, model_file):
 
 def n_net(train_test, input_file, model_file):
     if train_test == 'train':
-        nnet.train_model(input_file,model_file)
+        train_model(input_file,model_file)
     elif train_test == 'test':
-        nnet.test_model(input_file)
+        test_model(input_file,model_file)
 
     
 
 def main():
     verifyInput()
     train_test, input_file, model_file, model = sys.argv[1:]
-    print train_test,input_file,model_file,model
+    #print train_test,input_file,model_file,model
     if model == "adaboost":
         adaBoost(train_test, input_file, model_file)
     elif model == "nearest":

@@ -1,3 +1,4 @@
+#!/usr/bin/env python2
 import random
 import numpy as np
 import pickle
@@ -268,7 +269,7 @@ def test_model(test_file,model_file):
     :param test_file: test file
     :return:
     """
-    nnet = pickle.load(open(model_file, "rb", -1))
+    nnet = pickle.load(open(model_file, "r", -1))
 
 
     #print 'test'
@@ -288,25 +289,25 @@ def test_model(test_file,model_file):
 
 
     # calculate accuracy
-    # count = 0
-    # count0 = 0
-    # count1 = 0
-    # count2 = 0
-    # count3 = 0
-    #
-    # for i in range(len(x)):
-    #     if predict_label[i] == true_label[i]:
-    #         if true_label[i] == 0:
-    #             count0 +=1
-    #         elif true_label[i] == 1:
-    #             count1 +=1
-    #         elif true_label[i] == 2:
-    #             count2 +=1
-    #         elif true_label[i] == 3:
-    #             count3 +=1
-    #         count +=1
-    # print count0,count1,count2,count3
-    # print count, float(count)/len(x)
+    count = 0
+    count0 = 0
+    count1 = 0
+    count2 = 0
+    count3 = 0
+
+    for i in range(len(x)):
+        if predict_label[i] == true_label[i]:
+            if true_label[i] == 0:
+                count0 +=1
+            elif true_label[i] == 1:
+                count1 +=1
+            elif true_label[i] == 2:
+                count2 +=1
+            elif true_label[i] == 3:
+                count3 +=1
+            count +=1
+    #print count0,count1,count2,count3
+    print 'Accuracy:', float(count)/len(x)*100
 
 
 # if __name__ == '__main__':

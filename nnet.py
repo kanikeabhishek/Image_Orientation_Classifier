@@ -244,7 +244,7 @@ class neural_network(object):
         return predict_label
 
 
-def train_model(train_file):
+def train_model(train_file,model_file):
     """
     train the neural network using train file and save to 'nnet_model.txt'
     :param train_file: train file
@@ -258,17 +258,17 @@ def train_model(train_file):
     nnet.iter = 20
     nnet.train(X)
 
-    with open('nnet_model.txt','wb') as file:
+    with open(model_file,'wb') as file:
         pickle.dump(nnet, file, -1)
 
 
-def test_model(test_file):
+def test_model(test_file,model_file):
     """
     read 'nnet_model.txt', and predict on test data
     :param test_file: test file
     :return:
     """
-    nnet = pickle.load(open("nnet_model.txt", "rb", -1))
+    nnet = pickle.load(open(model_file, "rb", -1))
 
 
     #print 'test'
@@ -310,10 +310,10 @@ def test_model(test_file):
 
 
 # if __name__ == '__main__':
-#     start = time.time()
+#     #start = time.time()
 #     trainfile = 'train-data.txt'
 #     testfile = 'test-data.txt'
-#     train_model(trainfile)
-#     test_model(testfile)
-#     end = time.time()
+#     #train_model(trainfile)
+#     test_model(testfile,'nnet_model.txt')
+#     #end = time.time()
 #     #print end - start

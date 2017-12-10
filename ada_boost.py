@@ -51,7 +51,8 @@ predict appropriate orientation and probably result in accuracy ~ 0.
 
 import numpy as np
 import math
-import pickle
+import cPickle as pickle
+import gzip
 
 def readData(input_file):
     with open(input_file) as f:
@@ -113,12 +114,12 @@ def adaBoost(train_data, train_label, model_file):
             bag_decision_stumps[orientation]["weight"] *= norm_factor
             threshold_dict[max_feature_num][orientation][3] = error
 
-    with open(model_file, "w") as f:
+    with gzip.GzipFile(model_file, "w") as f:
         pickle.dump([threshold_dict, bag_decision_stumps], f)
 
 
 def test(test_data, test_label, file_names, model_file):
-    with open(model_file, "r") as f:
+    with gzip.GzipFile(model_file, "r") as f:
         threshold_dict, bag_decision_stumps = pickle.load(f)
 
     # Test data accuracy

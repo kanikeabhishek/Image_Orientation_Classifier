@@ -3,7 +3,18 @@ import random
 import numpy as np
 import pickle
 import time
-#from sklearn.preprocessing import scale # only use for normalizing data
+# from sklearn.preprocessing import scale
+
+
+#######################################################
+# sklearn ONLY USE FOR NORMALIZING DATA
+# PLEASE BE AWARE BURROW DOESN'T SUPPORT sklearn MODULE
+# THEREFORE LINE 100 WAS COMMENTED OUT.
+# THE MODEL WAS TRAINED BASED ON SCALED DATA
+# IF THE MODEL IS TESTING ON UNSCALED DATA
+# YOU MAY GET A LOWER ACCURACY
+# THE ACCURACY ON GIVEN TEST DATA USING sklearn.scale() IS 69.67126193
+#######################################################
 
 
 # The neural network was implement based on the algorithm on lecture slides, also we consulted following
@@ -310,10 +321,7 @@ def test_model(test_file,model_file):
             count +=1
     #print count0,count1,count2,count3
     print 'Accuracy:', float(count)/len(x)*100
-#
-# trainfile = 'train-data.txt'
-# testfile = 'test-data.txt'
-# test_model(testfile,'nnet_model.txt')
+
 
 # if __name__ == '__main__':
 #     #start = time.time()

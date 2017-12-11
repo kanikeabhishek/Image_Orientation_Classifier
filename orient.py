@@ -33,10 +33,11 @@ def n_net(train_test, input_file, model_file):
         test_model(input_file,model_file)
 
 def best(train_test,input_file,model_file):
+    knn_instance = KNN()
     if train_test == "train":
-        ada_boost.train(input_file, model_file)
+        knn_instance.train(input_file, model_file)
     elif train_test == "test":
-        ada_boost.predict(input_file, model_file)
+        knn_instance.predict(input_file, model_file)
 
     
 
@@ -51,7 +52,7 @@ def main():
     elif model == 'nnet':
         n_net(train_test, input_file, model_file)
     elif model =='best':
-        adaBoost(train_test, input_file, model_file)
+        nearest(train_test, input_file, model_file)
 
 
 

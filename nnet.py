@@ -9,13 +9,13 @@ import time
 #######################################################
 # sklearn ONLY USE FOR NORMALIZING DATA
 # PLEASE BE AWARE BURROW DOESN'T SUPPORT sklearn MODULE
-# THEREFORE LINE 100 WAS COMMENTED OUT.
+# THEREFORE LINE 6 AND 101 WAS COMMENTED OUT.
 # THE MODEL WAS TRAINED BASED ON SCALED DATA
 # IF THE MODEL IS TESTING ON UNSCALED DATA
 # YOU MAY GET A LOWER ACCURACY
 # THE ACCURACY ON GIVEN TEST DATA USING sklearn.scale() IS 69.67126193
+# PLEASE UNCOMMENT LINE 6 AND 101 IF YOUR ENVIRONMENT SUPPORT sklearn
 #######################################################
-
 
 # The neural network was implement based on the algorithm on lecture slides, also we consulted following
 # resources:
@@ -97,8 +97,8 @@ def read_data(filename):
             new_dataset.append(row)
         new_array = np.array(new_dataset)
         y = new_array[:, -4:]
-        #X = scale(new_array[:, :-4])
         X = new_array[:, :-4]
+        #X = scale(new_array[:, :-4])
         return [[X[i, :].tolist(), y[i].tolist()] for i in range(X.shape[0])]
 
 

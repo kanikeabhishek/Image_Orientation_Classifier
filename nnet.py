@@ -3,7 +3,7 @@ import random
 import numpy as np
 import pickle
 import time
-from sklearn.preprocessing import scale # only use for normalizing data
+#from sklearn.preprocessing import scale # only use for normalizing data
 
 
 # The neural network was implement based on the algorithm on lecture slides, also we consulted following
@@ -86,7 +86,8 @@ def read_data(filename):
             new_dataset.append(row)
         new_array = np.array(new_dataset)
         y = new_array[:, -4:]
-        X = scale(new_array[:, :-4])
+        #X = scale(new_array[:, :-4])
+        X = new_array[:, :-4]
         return [[X[i, :].tolist(), y[i].tolist()] for i in range(X.shape[0])]
 
 
@@ -258,7 +259,7 @@ def train_model(train_file,model_file):
     nnet = neural_network(n_inputs=192, n_hidden=40, n_outputs=4, activation='sigmoid')
     nnet.iter = 20
     nnet.train(X)
-
+    #neural_network.__module__ = "nnet"
     with open(model_file,'wb') as file:
         pickle.dump(nnet, file, -1)
 
@@ -269,6 +270,7 @@ def test_model(test_file,model_file):
     :param test_file: test file
     :return:
     """
+    #print model_file
     nnet = pickle.load(open(model_file, "r", -1))
 
 
@@ -308,7 +310,10 @@ def test_model(test_file,model_file):
             count +=1
     #print count0,count1,count2,count3
     print 'Accuracy:', float(count)/len(x)*100
-
+#
+# trainfile = 'train-data.txt'
+# testfile = 'test-data.txt'
+# test_model(testfile,'nnet_model.txt')
 
 # if __name__ == '__main__':
 #     #start = time.time()

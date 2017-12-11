@@ -32,6 +32,12 @@ def n_net(train_test, input_file, model_file):
     elif train_test == 'test':
         test_model(input_file,model_file)
 
+def best(train_test,input_file,model_file):
+    if train_test == "train":
+        ada_boost.train(input_file, model_file)
+    elif train_test == "test":
+        ada_boost.predict(input_file, model_file)
+
     
 
 def main():
@@ -44,6 +50,9 @@ def main():
         nearest(train_test, input_file, model_file)
     elif model == 'nnet':
         n_net(train_test, input_file, model_file)
+    elif model =='best':
+        adaBoost(train_test, input_file, model_file)
+
 
 
 if __name__ == '__main__':
